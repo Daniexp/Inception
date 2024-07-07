@@ -1,18 +1,13 @@
+all: up
 
-NAME = Inception
-SRCDIR = ./srcs/
+up:
+	docker-compose -f srcs/docker-compose.yml up --build
 
-DBFLD = mariadb/
-DBIMGNAME = mariadb
-DBDOCKER = mariadb
-DBDIR = $(addprefix $(SRCDIR), $(DBFLD))
+down:
+	docker-compose -f srcs/docker-compose.yml down
 
-DBDOCKERFILE = $(addprefix $(DBDIR), $(BDOCKER))
-DBIMGSRC = $(addprefix $(DBDIR), $(DBIMGNAME))
+restart:
+	docker-compose -f srcs/docker-compose.yml restart
 
-db: 
-	docker build --file srcs/mariadb/mariadb.Dockerfile -t mariadb:latest srcs/mariadb
-	docker run mariadb:latest
-
-clean: $(DBIMGSRC)
-	rm -rf $(DBIMGSRC)
+clean:
+	docker-compose -f srcs/docker-compose.yml down -v
