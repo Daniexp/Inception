@@ -1,10 +1,15 @@
 FROM debian:12.6
 
-RUN apt-get update && apt-get install -y nginx
+RUN apt-get update && apt-get install -y \
+	nginx \
+	openssl \
+	&& rm -rf /var/lib/apt/lists/*
+# Generate keys
+RUN mkdir -p /etc/nginx/ssl && \
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/key.pem -out /etc/nginx/ssl/cert.pem -subj "/C=ES/ST=Madrid/L=Madrid/O=42Madrid/CN=${DOMAIN}"
 
-#COPY conf/nginx.conf /etc/nginx/nginx.conf
-COPY conf/selfsigned.crt /etc/nginx/conf/selfsigned.crt
-COPY conf/selfsigned.key /etc/nginx/conf/selfsigned.key
+COPY conf/nginx.conf /etc/nginx/nginx.conf
+# COPY tools/html /usr/share/nginx/html
 
 EXPOSE 443
 

@@ -1,6 +1,7 @@
   version: '3.8'
   services:
     nginx:
+      container_name: nginx
       build:
         context: ./requirements/nginx
       ports:
@@ -9,39 +10,70 @@
         - wordpress_data:/var/www/html
       networks:
         - my_network
+      depends_on:
+        - wordpress
 
     mariadb:
+      container_name: mariadb
       build:
         context: ./requirements/mariadb
-      environment:
-        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-        MYSQL_DATABASE: wordpress
-        MYSQL_USER: ${MYSQL_USER}
-        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        args:
+          DBUSER: ${DBUSER}
+          DBUSERPASS: ${DBUSERPASS}
+          VLM: ${DBVLM}
+          DBNAME: ${DBNAME}
       volumes:
         - mariadb_data:/var/lib/mysql
       networks:
         - my_network
       ports:
         - "3306:3306"
+      restart: always
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+        interval: 7s
+        timeout: 10s
+        retries: 7
 
     wordpress:
+      container_name: wordpress
       build:
         context: ./requirements/wordpress
-      environment:
-        WORDPRESS_DB_HOST: maria:3306
-        WORDPRESS_DB_USER:
-        WORDPRESS_DB_PASSWORD:
-        WORDPRESS_DB_NAME: wordpress
+        args:
+          VLM: ${WPVLM}
+          SUPER: ${WPSUPER}
+          SUPERPASS: ${WPSUPERPASS}
+          USER: ${WPUSER}
+          USERPASS: ${WPUSERPASS}
+          EMAIL: ${EMAIL}
+          DOMAIN: ${DOMAIN}
+          DBUSER: ${DBUSER}
+          DBUSERPASS: ${DBUSERPASS}
+          DBNAME: ${DBNAME}
+          DBHOST: ${DBHOST}
+      env_file:
+        - .env
       volumes:
         - wordpress_data:/var/www/html
       networks:
         - my_network
       ports:
         - "9000:9000"
+      depends_on:
+        - mariadb
+          #condition: service_healthy
   volumes:
     mariadb_data:
+        driver_opts:
+          type: none
+          o: bind
+          device: /home/nkustoner/data/mariadb
     wordpress_data:
+        driver_opts:
+          type: none
+          o: bind
+          device: /home/nkustoner/data/wordpress
 
   networks:
     my_network:
+      name: my_network
