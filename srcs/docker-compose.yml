@@ -10,8 +10,10 @@
         - wordpress_data:/var/www/html
       networks:
         - my_network
+      restart: always
       depends_on:
-        - wordpress
+        wordpress:
+          condition: service_healthy
 
     mariadb:
       container_name: mariadb
@@ -53,6 +55,7 @@
           DBHOST: ${DBHOST}
       env_file:
         - .env
+      restart: always
       volumes:
         - wordpress_data:/var/www/html
       networks:
@@ -60,19 +63,24 @@
       ports:
         - "9000:9000"
       depends_on:
-        - mariadb
-          #condition: service_healthy
+        mariadb:
+          condition: service_healthy
+      healthcheck:
+        test: ["CMD", "wp", "core", "is-installed", "--allow-root", "--path=/var/www/html/wordpress"]
+        interval: 5s
+        timeout: 5s
+        retries: 10
   volumes:
     mariadb_data:
         driver_opts:
           type: none
           o: bind
-          device: /home/nkustoner/data/mariadb
+          device: /home/dexposit/data/mariadb
     wordpress_data:
         driver_opts:
           type: none
           o: bind
-          device: /home/nkustoner/data/wordpress
+          device: /home/dexposit/data/wordpress
 
   networks:
     my_network:
