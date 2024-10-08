@@ -20,10 +20,10 @@ RUN sed -i "s/^bind-address\s*=.*/bind-address = 0.0.0.0/" "/etc/mysql/mariadb.c
 
 #RUN mysql_install_db
 
-RUN echo "CREATE USER IF NOT EXISTS '${DBUSER}'@'%' IDENTIFIED BY '${DBUSERPASS}';" >> /var/lib/mysql/mariaDBCommands.sql && \
-    echo "CREATE DATABASE IF NOT EXISTS ${DBNAME};" >> /var/lib/mysql/mariaDBCommands.sql && \
-    echo "GRANT ALL PRIVILEGES ON ${DBNAME}.* TO '${DBUSER}'@'%';" >> /var/lib/mysql/mariaDBCommands.sql && \
-    echo "FLUSH PRIVILEGES;" >> /var/lib/mysql/mariaDBCommands.sql
+RUN echo "CREATE USER IF NOT EXISTS '${DBUSER}'@'%' IDENTIFIED BY '${DBUSERPASS}'; \
+    CREATE DATABASE IF NOT EXISTS ${DBNAME}; \
+    GRANT ALL PRIVILEGES ON ${DBNAME}.* TO '${DBUSER}'@'%'; \
+    FLUSH PRIVILEGES;" > /var/lib/mysql/mariaDBCommands.sql
 
 RUN service mariadb start && mariadb < "/var/lib/mysql/mariaDBCommands.sql" && service mariadb stop
 

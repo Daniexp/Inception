@@ -33,9 +33,9 @@
       restart: always
       healthcheck:
         test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-        interval: 7s
-        timeout: 10s
-        retries: 7
+        interval: 5s
+        timeout: 7s
+        retries: 5
 
     wordpress:
       container_name: wordpress
@@ -66,10 +66,10 @@
         mariadb:
           condition: service_healthy
       healthcheck:
-        test: ["CMD", "wp", "core", "is-installed", "--allow-root", "--path=/var/www/html/wordpress"]
+        test: ["CMD", "wp", "core", "is-installed", "--allow-root", "--path=/var/www/html"]
         interval: 5s
-        timeout: 5s
-        retries: 10
+        timeout: 7s
+        retries: 5
   volumes:
     mariadb_data:
         driver_opts:
