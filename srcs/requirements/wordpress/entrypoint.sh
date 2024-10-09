@@ -16,7 +16,7 @@ if [ ! "$(ls -A "$WPVLM/wordpress")" ]; then
 	}
 	require_once ABSPATH . 'wp-settings.php'; \
 	" > $WPVLM/wp-config.php && 
-	wp core install  --allow-root --url="$DOMAIN" --title="DEXPOSIT HOME" --admin_user="$WPSUPER" --admin_password="$WPSUSERPASS" --admin_email="$EMAIL" --skip-email --path="$WPVLM" && wp user create $WPUSER $USEREMAIL --user_pass="$WPUSERPASS" --allow-root --role=subscriber --path="$WPVLM";
+	wp core install  --allow-root --url="$DOMAIN" --title="DEXPOSIT HOME" --admin_user="$WPSUPER" --admin_password="$WPSUPERPASS" --admin_email="$EMAIL" --skip-email --path="$WPVLM" && wp user create $WPUSER $USEREMAIL --user_pass="$WPUSERPASS" --allow-root --role=subscriber --path="$WPVLM";
 fi
 
 php-fpm8.2 --nodaemonize
