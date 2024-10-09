@@ -1,18 +1,7 @@
 FROM debian:bullseye
 
 ARG VLM
-ARG DOMAIN
-ARG SUPER
-ARG SUPERPASS
-ARG USER
-ARG USERPASS
-ARG EMAIL \
- DBNAME \
- DBUSER \
- DBUSERPASS \
- DBHOST
 
-# Instala PHP, WP-CLI, y dependencias necesarias
 RUN apt-get update && apt-get install -y \
     php7.4-fpm \
     php7.4-mysql \
@@ -22,7 +11,6 @@ RUN apt-get update && apt-get install -y \
     less \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp && \
@@ -30,15 +18,7 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     mkdir -p /run/php
 
 COPY entrypoint.sh /entrypoint.sh
-# Si el directorio está vacío, descarga e instala WordPress
-#
-# Configuración de PHP-FPM
-#COPY conf/php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
 
-# Exponer el puerto 9000 para PHP-FPM
 EXPOSE 9000
 
-# Iniciar PHP-FPM
-#ENTRYPOINT ["php-fpm7.4", "--nodaemonize"]
-#ENTRYPOINT ["tail", "-f"]
 ENTRYPOINT ["bash", "entrypoint.sh"]
