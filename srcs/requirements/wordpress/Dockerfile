@@ -1,4 +1,4 @@
-FROM debian:12.6
+FROM debian:bullseye
 
 ARG VLM
 ARG DOMAIN
@@ -14,8 +14,8 @@ ARG EMAIL \
 
 # Instala PHP, WP-CLI, y dependencias necesarias
 RUN apt-get update && apt-get install -y \
-    php8.2-fpm \
-    php8.2-mysql \
+    php7.4-fpm \
+    php7.4-mysql \
     curl \
     unzip \
     vim \
@@ -33,12 +33,12 @@ COPY entrypoint.sh /entrypoint.sh
 # Si el directorio está vacío, descarga e instala WordPress
 #
 # Configuración de PHP-FPM
-#COPY conf/php-fpm.conf /etc/php/8.2/fpm/php-fpm.conf
+#COPY conf/php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
 
 # Exponer el puerto 9000 para PHP-FPM
 EXPOSE 9000
 
 # Iniciar PHP-FPM
-#ENTRYPOINT ["php-fpm8.2", "--nodaemonize"]
+#ENTRYPOINT ["php-fpm7.4", "--nodaemonize"]
 #ENTRYPOINT ["tail", "-f"]
 ENTRYPOINT ["bash", "entrypoint.sh"]

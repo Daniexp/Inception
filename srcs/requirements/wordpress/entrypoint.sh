@@ -1,5 +1,5 @@
 if [ ! "$(ls -A "$WPVLM/wordpress")" ]; then 
-	sed -i 's/listen = \/run\/php\/php8.2-fpm.sock/listen = 9000/g' /etc/php/8.2/fpm/pool.d/www.conf &&  \
+	sed -i 's/listen = \/run\/php\/php7.4-fpm.sock/listen = 9000/g' /etc/php/7.4/fpm/pool.d/www.conf &&  \
 	chmod +rwx $WPVLM && 
 	wp core download --path="$WPVLM" --allow-root &&
 	echo "<?php
@@ -19,5 +19,5 @@ if [ ! "$(ls -A "$WPVLM/wordpress")" ]; then
 	wp core install  --allow-root --url="$DOMAIN" --title="DEXPOSIT HOME" --admin_user="$WPSUPER" --admin_password="$WPSUPERPASS" --admin_email="$EMAIL" --skip-email --path="$WPVLM" && wp user create $WPUSER $USEREMAIL --user_pass="$WPUSERPASS" --allow-root --role=subscriber --path="$WPVLM";
 fi
 
-php-fpm8.2 --nodaemonize
+exec php-fpm7.4 --nodaemonize
 
